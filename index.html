@@ -52,7 +52,7 @@
       }
 
       try {
-        const res = await fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_DEPLOYMENT_ID/exec?code=${code}`);
+        const res = await fetch(`https://script.google.com/macros/s/AKfycbyJSFo2qcbDpi_KRE301lsHz5_XCAs4Hp1_WtxOPfxcF3EDM11Z-XuQqNgK2iUW1zKS/exec?code=${code}`);
         const text = await res.text();
         statusEl.innerHTML = text;
       } catch (err) {
