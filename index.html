@@ -2,46 +2,67 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Apri Portone</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/apri-portone/icon.png">
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 2em;
-      background-color: #f9f9f9;
+      padding: 2rem;
+      background: #f8f8f8;
     }
     button {
-      font-size: 1.5em;
-      padding: 0.8em 2em;
-      background-color: #0077cc;
+      background-color: #2c3e50;
       color: white;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 0.5rem;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #005fa3;
+    .status {
+      margin-top: 2rem;
+      font-size: 1.1rem;
     }
   </style>
 </head>
 <body>
-  <h2>Clicca il pulsante per aprire il portone</h2>
-  <form id="form" method="GET" action=`https://script.google.com/macros/s/AKfycbxe9TgrO-8irVkQNFjRVO6981hMqLAj5ydY8ngC8UARohnLbV8j7Xu_ui-vfGeUZ9A/exec?code=${code}`>
-    <input type="hidden" name="code" id="code" />
-    <button type="submit">Apri Portone</button>
-  </form>
+
+  <h1>Benvenuto 👋</h1>
+  <p>Clicca sul bottone per aprire il portone.</p>
+
+  <button onclick="apriPortone()">Apri Portone</button>
+
+  <div class="status" id="status"></div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (!code) {
-      document.body.innerHTML = "<h2>❌ Nessun codice fornito nell'URL</h2>";
-    } else {
-      document.getElementById('code').value = code;
+    function getCodeFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("code");
+    }
+
+    async function apriPortone() {
+      const code = getCodeFromURL();
+      const statusEl = document.getElementById("status");
+
+      if (!code) {
+        statusEl.innerText = "❌ Codice non trovato nell'URL.";
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://script.google.com/macros/s/YOUR_SCRIPT_DEPLOYMENT_ID/exec?code=${code}`);
+        const text = await res.text();
+        statusEl.innerHTML = text;
+      } catch (err) {
+        statusEl.innerText = "❌ Errore di connessione.";
+        console.error(err);
+      }
     }
   </script>
+
 </body>
 </html>
+
 
