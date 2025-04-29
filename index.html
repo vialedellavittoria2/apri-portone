@@ -67,7 +67,7 @@
       document.getElementById('response').innerText = '⏳ Invio richiesta...';
 
       try {
-        const res = await fetch(`https://script.google.com/macros/s/1k6Qq2KBG3jd9wifYdwLNumMGFNXKrAgSUVQS52mm2RVylFDACFMeKD7z/exec?code=${code}`);
+        const res = await fetch(`https://script.google.com/macros/s/AKfycbwBXkhhOeuZvR2STvnGQQeDEWWUXPO7qRxBxTy721AQapkPuk8G09RGbiBvkDFMN1ta/exec?code=${code}`);
         const text = await res.text();
         document.getElementById('response').innerHTML = text;
       } catch (e) {
