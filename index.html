@@ -1,79 +1,80 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apri il portone</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="/apri-portone/icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apertura Portone</title>
+  <link rel="icon" href="icon-url.png" />
   <style>
     body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      padding: 1em;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
     }
     .container {
-      background: white;
-      padding: 2em;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 100%;
-      max-width: 400px;
+      max-width: 600px;
+      margin: 0 auto;
     }
     h2 {
-      margin-bottom: 1em;
-      color: #333;
+      color: #2C3E50;
     }
     button {
-      background-color: #007bff;
+      background-color: #3498db;
       color: white;
-      font-size: 1.2em;
-      padding: 0.8em 1.5em;
       border: none;
-      border-radius: 8px;
+      padding: 15px 30px;
+      font-size: 16px;
       cursor: pointer;
+      border-radius: 5px;
     }
     button:hover {
-      background-color: #0056b3;
+      background-color: #2980b9;
     }
-    #response {
-      margin-top: 1em;
-      color: #444;
-      font-weight: bold;
+    .error {
+      color: red;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Clicca il pulsante per aprire il portone d'ingresso</h2>
-    <button onclick="openDoor()">Apri il portone</button>
-    <div id="response"></div>
+    <h2>🔑 Verifica il tuo codice per aprire il portone</h2>
+    <p id="statusMessage">Caricamento...</p>
+    <button id="openDoorBtn" style="display:none;" onclick="openDoor()">Apri Portone</button>
   </div>
 
   <script>
-    async function openDoor() {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      if (!code) {
-        document.getElementById('response').innerText = '❌ Codice non trovato.';
-        return;
-      }
+    // Ottieni il parametro 'code' dall'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
 
-      document.getElementById('response').innerText = '⏳ Invio richiesta...';
+    if (code) {
+      // Chiamata al Google Apps Script con il codice dell'ospite
+      fetch(`https://script.google.com/macros/s/AKfycbzMcjzKvR6DD58MtffQyuptxz00L3yvqcaNVz-0GHrOeImLmKR7WebAPXnq6qOGOzzG/exec?code=${code}`)
+        .then(response => response.json())
+        .then(data => {
+          const statusMessage = document.getElementById('statusMessage');
+          if (data.status === 'valid') {
+            statusMessage.textContent = '✅ Codice valido! Clicca il pulsante per aprire il portone.';
+            document.getElementById('openDoorBtn').style.display = 'inline-block';
+          } else {
+            statusMessage.textContent = '❌ Codice non valido o scaduto';
+            statusMessage.classList.add('error');
+          }
+        })
+        .catch(error => {
+          console.error('Errore:', error);
+          document.getElementById('statusMessage').textContent = '❌ Si è verificato un errore. Riprova.';
+        });
+    } else {
+      document.getElementById('statusMessage').textContent = '❌ Nessun codice trovato nell\'URL.';
+    }
 
-      try {
-        const res = await fetch(`https://script.google.com/macros/s/AKfycbxQ8A1w-Fx783ktih7Vlv_1mvdnvRZZfjCRmOgSbZv2-uuK5UhKaakjOshvhA2UrvJE/exec?code=${code}`);
-        const text = await res.text();
-        document.getElementById('response').innerHTML = text;
-      } catch (e) {
-        document.getElementById('response').innerText = 'Errore nella connessione.';
-      }
+    // Funzione per inviare il comando di apertura del portone
+    function openDoor() {
+      alert("Il portone si sta aprendo...");
+      // Puoi anche aggiungere un'ulteriore fetch qui per inviare la richiesta di apertura via API
     }
   </script>
 </body>
 </html>
+
