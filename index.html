@@ -1,78 +1,45 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apertura Portone</title>
-  <link rel="icon" href="icon-url.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apri Portone</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/apri-portone/icon.png">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       text-align: center;
-      padding: 20px;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    h2 {
-      color: #2C3E50;
+      padding: 2em;
+      background-color: #f9f9f9;
     }
     button {
-      background-color: #3498db;
+      font-size: 1.5em;
+      padding: 0.8em 2em;
+      background-color: #0077cc;
       color: white;
       border: none;
-      padding: 15px 30px;
-      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
-      border-radius: 5px;
     }
     button:hover {
-      background-color: #2980b9;
-    }
-    .error {
-      color: red;
+      background-color: #005fa3;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🔑 Verifica il tuo codice per aprire il portone</h2>
-    <p id="statusMessage">Caricamento...</p>
-    <button id="openDoorBtn" style="display:none;" onclick="openDoor()">Apri Portone</button>
-  </div>
+  <h2>Clicca il pulsante per aprire il portone</h2>
+  <form id="form" method="GET" action="https://script.google.com/macros/s/AKfycbwo3J79gtvNW8XFSeebCfFJuVaW1wbL8EBuCqMgUHUS-UPmUREMA6KLoJ-ZQJ_bbBQ6/exec">
+    <input type="hidden" name="code" id="code" />
+    <button type="submit">Apri Portone</button>
+  </form>
 
   <script>
-    // Ottieni il parametro 'code' dall'URL
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-
-    if (code) {
-      // Chiamata al Google Apps Script con il codice dell'ospite
-      fetch(`https://script.google.com/macros/s/AKfycbzMcjzKvR6DD58MtffQyuptxz00L3yvqcaNVz-0GHrOeImLmKR7WebAPXnq6qOGOzzG/exec?code=${code}`)
-        .then(response => response.json())
-        .then(data => {
-          const statusMessage = document.getElementById('statusMessage');
-          if (data.status === 'valid') {
-            statusMessage.textContent = '✅ Codice valido! Clicca il pulsante per aprire il portone.';
-            document.getElementById('openDoorBtn').style.display = 'inline-block';
-          } else {
-            statusMessage.textContent = '❌ Codice non valido o scaduto';
-            statusMessage.classList.add('error');
-          }
-        })
-        .catch(error => {
-          console.error('Errore:', error);
-          document.getElementById('statusMessage').textContent = '❌ Si è verificato un errore. Riprova.';
-        });
+    if (!code) {
+      document.body.innerHTML = "<h2>❌ Nessun codice fornito nell'URL</h2>";
     } else {
-      document.getElementById('statusMessage').textContent = '❌ Nessun codice trovato nell\'URL.';
-    }
-
-    // Funzione per inviare il comando di apertura del portone
-    function openDoor() {
-      alert("Il portone si sta aprendo...");
-      // Puoi anche aggiungere un'ulteriore fetch qui per inviare la richiesta di apertura via API
+      document.getElementById('code').value = code;
     }
   </script>
 </body>
